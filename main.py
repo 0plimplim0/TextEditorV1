@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import font as tkfont
-import os
 
 #Window config
 root = tk.Tk(className="tkint")
@@ -22,8 +21,7 @@ def abrir_archivo(event=None):
             ("Archivos de texto", "*.txt"),
             ("Archivos de Python", "*.py"),
             ("Todos lo archivos", "*.*")
-        ),
-        initialdir="~/Dev/Pruebas/"
+        )
     )
     textbox.delete("1.0", "end")
     with open(filename, "r") as archivo:
@@ -32,9 +30,7 @@ def abrir_archivo(event=None):
     fileVar.set(filename)
 def guardar_archivo(event=None):
     content = textbox.get("1.0", "end-1c")
-    filename = filedialog.asksaveasfilename(
-        initialdir="~/Dev/Pruebas/"
-    )
+    filename = filedialog.asksaveasfilename()
     with open(filename, "w") as archivo:
         archivo.write(content)
 def salir(event=None):
@@ -57,10 +53,16 @@ menu_archivo.add_command(label="Salir", accelerator="Ctrl+X", command=salir)
 barra_menu.add_cascade(menu=menu_archivo, label="Archivo")
 root.config(menu=barra_menu)
 
+#Frame
+framee = tk.Frame(root)
+framee.pack(fill="both", expand=True)
+framee.columnconfigure(1, weight=1)
+framee.rowconfigure(0, weight=1)
+
 #TextBox
 #Dark theme ---> textbox = tk.Text(root, foreground="white", insertbackground="white", background="black")
-textbox = tk.Text(root, font=custom_font)
-textbox.pack(fill="both", expand=True)
+textbox = tk.Text(framee, font=custom_font, bd=0)
+textbox.grid(column=1, row=0, sticky="NSWE")
 
 #Bottombar  
 bottom_bar = tk.Frame(root, height=20, bg="gray")
@@ -68,5 +70,31 @@ bottom_bar.pack(fill="x")
 bottom_bar.pack_propagate(False)
 file = tk.Label(bottom_bar,textvariable=fileVar, font=custom_font, bg="gray")
 file.grid(column=0, row=0)
+line = tk.Label(bottom_bar, font=custom_font, bg="gray", foreground="black")
+line.grid(column=1, row=0, padx=20)
+
+currentLine = textbox.index(tk.END)
+currentLine = bool(currentLine)
+currentLine = round(currentLine)
+
+#Line tracker
+lineTracker = tk.Text(framee, width=4, bd=0, font=custom_font, bg="#E6E6E6")
+lineTracker.grid(column=0, row=0, sticky="NS")
+lineTracker.tag_config("alinear", justify="right")
+
+def get_linePos():
+    linePos = int(textbox.index("end-1c").split(".")[0])
+    lineTracker.delete("1.0", "end-1c")
+    for i in range(linePos):
+        x = str(i+1)
+        lineTracker.insert("end", x + "\n", "alinear")
+    root.after(100, get_linePos)
+def get_cursorPos():
+    cursorPos = textbox.index(tk.INSERT).split(".")
+    currentLine = "Linea " + cursorPos[0]
+    line.config(text=currentLine)
+    root.after(100, get_cursorPos)
+root.after(100, get_linePos)
+root.after(100, get_cursorPos)
 
 root.mainloop() 
