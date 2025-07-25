@@ -1,15 +1,21 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import font as tkfont
 import os
 
 #Window config
 root = tk.Tk(className="tkint")
 root.title("Editor de texto")
 root.geometry("800x700")
+fileVar = tk.StringVar()
+fileVar.set("Untitled")
+
+custom_font = tkfont.Font(family="Fixedsys Excelsior 3.01", size=12)
 
 #Functions
 def nuevo_archivo(event=None):
-    print("Nuevo archivo")
+    textbox.delete("1.0", "end")
+    fileVar.set("Untitled")
 def abrir_archivo(event=None):
     filename = filedialog.askopenfilename(
         filetypes=(
@@ -19,10 +25,11 @@ def abrir_archivo(event=None):
         ),
         initialdir="~/Dev/Pruebas/"
     )
-    print(filename)
+    textbox.delete("1.0", "end")
     with open(filename, "r") as archivo:
         content = archivo.read()
     textbox.insert("1.0", content)
+    fileVar.set(filename)
 def guardar_archivo(event=None):
     content = textbox.get("1.0", "end-1c")
     filename = filedialog.asksaveasfilename(
@@ -51,10 +58,15 @@ barra_menu.add_cascade(menu=menu_archivo, label="Archivo")
 root.config(menu=barra_menu)
 
 #TextBox
-width = root.winfo_screenwidth()
-height = root.winfo_screenheight()
-#Dark theme ---> textbox = tk.Text(root, height=height, width=width, foreground="white", insertbackground="white", background="black")
-textbox = tk.Text(root, height=height, width=width)
-textbox.pack()
+#Dark theme ---> textbox = tk.Text(root, foreground="white", insertbackground="white", background="black")
+textbox = tk.Text(root, font=custom_font)
+textbox.pack(fill="both", expand=True)
 
-root.mainloop()
+#Bottombar  
+bottom_bar = tk.Frame(root, height=20, bg="gray")
+bottom_bar.pack(fill="x")
+bottom_bar.pack_propagate(False)
+file = tk.Label(bottom_bar,textvariable=fileVar, font=custom_font, bg="gray")
+file.grid(column=0, row=0)
+
+root.mainloop() 

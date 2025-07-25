@@ -2,7 +2,7 @@
 
 ## ⚙️ Aclaracion
 
-Al crear la ventana con `tk.Tk()` uso el atributo `className; esto es porque debido a
+Al crear la ventana con `tk.Tk()` uso el atributo `className`; esto es porque debido a
 mi config de hyprland tenia problemas a la hora de que se mostrara la ventana de tkinter,
 pero no es necesario ni afecta al codigo en si.
 
@@ -32,7 +32,7 @@ python main.py
 
 ## 🔮 Caracteristicas futuras
 
-- [ ]  Resaltado de sintaxis
+- [ ] Resaltado de sintaxis
 - [ ] Temas personalizados
 - [ ] Autocompletado (tal vez)
 - [ ] Soporte para multiples pestañas (tal vez)
